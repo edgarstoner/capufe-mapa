@@ -470,20 +470,16 @@ function parseCronogramaPlazaId(text) {
 // successful live refresh.
 function applyAvanceTAG() {
   const banner = document.getElementById('progress-banner');
-  let totalEjecutado = 0, totalConvertibles = 0, matched = 0;
+  let totalEjecutado = 0, totalCarriles = 0, matched = 0;
 
   PLAZAS.forEach(p => {
-    // AVANCE_DATA keys already match PLAZAS_BASE's own id format directly
-    // ("1B", "56B", "223", "224", "67A", ...) — this does NOT go through
-    // ID_ALIASES, which maps to a different key convention used only for
-    // the coordinates sheet.
     const key = String(p.id);
     const a = AVANCE_DATA[key];
     if (a) {
       p.avance = a;
       matched++;
       totalEjecutado += a.ejecutado;
-      totalConvertibles += a.convertibles;
+      totalCarriles  += a.carriles;
     } else {
       p.avance = null;
     }
@@ -494,7 +490,8 @@ function applyAvanceTAG() {
     }
   });
 
-  const overallPct = totalConvertibles > 0 ? (totalEjecutado / totalConvertibles) * 100 : 0;
+  // Porcentaje global: misma fórmula que el Sheet (ejecutado / carriles totales)
+  const overallPct = totalCarriles > 0 ? (totalEjecutado / totalCarriles) * 100 : 0;
   const opEl = document.getElementById('op-pct-value');
   opEl.textContent = Math.round(overallPct) + '%';
   opEl.style.color = progressColor(overallPct);
@@ -510,17 +507,16 @@ function processCSVText(text) {
   const rows = parseCSV(text);
   const headerIdx = rows.findIndex(r => (r[0]||'').trim() === 'Unidad Regional');
   if (headerIdx === -1) throw new Error('No se encontró encabezado "Unidad Regional". ¿Es el archivo correcto?');
-  const headerRow = rows[headerIdx];
+  const headerRow    = rows[headerIdx];
   const subHeaderRow = rows[headerIdx + 1] || [];
 
-  const carrilesIdx = headerRow.findIndex(h => h.trim().toLowerCase() === 'carriles');
-  const fijosIdx    = headerRow.findIndex(h => /fijos/i.test(h));
+  const carrilesIdx  = headerRow.findIndex(h => h.trim().toLowerCase() === 'carriles');
+  const fijosIdx     = headerRow.findIndex(h => /fijos/i.test(h));
+  const avancePctIdx = headerRow.findIndex(h => /avance/i.test(h));
   const ejecutadoIdxs = [];
   subHeaderRow.forEach((h, i) => { if (h.trim().toLowerCase() === 'ejecutado') ejecutadoIdxs.push(i); });
 
-  if (carrilesIdx === -1 || ejecutadoIdxs.length === 0) {
-    throw new Error('Columnas no reconocidas. Verifica que el CSV sea de la hoja Cronograma.');
-  }
+  if (carrilesIdx === -1) throw new Error('Columna "Carriles" no encontrada. Verifica que el CSV sea de la hoja Cronograma.');
 
   const newData = {};
   for (let i = headerIdx + 2; i < rows.length; i++) {
@@ -534,9 +530,20 @@ function processCSVText(text) {
     const carriles     = parseFloat(r[carrilesIdx]) || 0;
     const fijos        = fijosIdx > -1 ? (parseFloat(r[fijosIdx]) || 0) : 0;
     const convertibles = Math.max(0, carriles - fijos);
+
     let ejecutado = 0;
     ejecutadoIdxs.forEach(idx => { const v = parseFloat(r[idx]); if (!isNaN(v) && v > ejecutado) ejecutado = v; });
-    const pct = convertibles > 0 ? (ejecutado / convertibles) * 100 : null;
+
+    // Usar el % de avance directo del Sheet (guardado como decimal: 0.5357 = 53.57%)
+    let pct = null;
+    if (avancePctIdx > -1) {
+      const rawPct = parseFloat(r[avancePctIdx]);
+      if (!isNaN(rawPct) && rawPct > 0) pct = rawPct * 100;
+      else if (!isNaN(rawPct)) pct = 0;
+    } else if (convertibles > 0) {
+      pct = (ejecutado / convertibles) * 100;
+    }
+
     newData[pid] = { carriles, fijos, convertibles, ejecutado, pct };
   }
   return newData;
