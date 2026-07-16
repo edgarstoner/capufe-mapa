@@ -549,7 +549,7 @@ async function fetchAndUpdate() {
   btn.textContent = '⏳ Actualizando…';
   banner.style.display = 'none';
   try {
-    const res = await fetch(SCRIPT_URL);
+    const res = await fetch(SCRIPT_URL + '&t=' + Date.now(), {cache:'no-store'});
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const text = await res.text();
     if (text.trim().startsWith('<') || text.trim() === 'Acceso denegado') throw new Error('Respuesta inesperada del servidor');
