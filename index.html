@@ -287,16 +287,16 @@ function progressColor(pct) {
 }
 
 const makeProgressIcon = (tipo, pct) => {
-  const fill = progressColor(pct);
-  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="38" viewBox="0 0 30 38">' +
-    '<path d="M15 1C8.4 1 2 6.9 2 14c0 8.5 13 23 13 23s13-14.5 13-23C28 6.9 21.6 1 15 1Z" fill="' + fill + '" stroke="white" stroke-width="1.5"/>' +
-    '<circle cx="15" cy="14" r="9" fill="white" opacity="0.95"/></svg>';
+  const ring = progressColor(pct);
   const inner = tipo === 'puente'
-    ? '<span style="position:absolute;top:4px;left:50%;transform:translateX(-50%);font-size:11px;line-height:1;">🌉</span>'
-    : '<img src="img/toll.png" style="position:absolute;top:5px;left:50%;transform:translateX(-50%);width:16px;height:16px;object-fit:contain;">';
+    ? '<span style="font-size:15px;line-height:1;">🌉</span>'
+    : '<img src="img/toll.png" style="width:18px;height:18px;object-fit:contain;">';
+  const html = '<div style="width:28px;height:28px;border-radius:50%;background:white;' +
+    'border:3px solid ' + ring + ';box-shadow:0 1px 3px rgba(0,0,0,0.4);' +
+    'display:flex;align-items:center;justify-content:center;">' + inner + '</div>';
   return L.divIcon({
-    html: '<div style="position:relative;width:30px;height:38px;">' + svg + inner + '</div>',
-    className:'', iconSize:[30,38], iconAnchor:[15,38], popupAnchor:[0,-38]
+    html,
+    className:'', iconSize:[28,28], iconAnchor:[14,14], popupAnchor:[0,-14]
   });
 };
 
