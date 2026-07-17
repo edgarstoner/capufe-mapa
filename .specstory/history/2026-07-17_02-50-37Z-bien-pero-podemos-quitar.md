@@ -159,3 +159,498 @@ _**Agent (claude-sonnet-5 2026-07-17 02:54:18Z)**_
 _**Agent (claude-sonnet-5 2026-07-17 02:54:18Z)**_
 
 Listo, los marcadores de puentes ahora usan `img/bridge.png` en vez del emoji 🌉.
+
+---
+
+_**User (2026-07-17 02:55:56Z)**_
+
+Tambien cambua las imagenes del menu que estan en el menu izquierdo de la pagina, y mejora la visualizaicon porque parece que la seccion ultoma en donde se ponen los selectores de UT y luego abajo las plazas no se visualizan correctamente.
+
+---
+
+_**Agent (claude-sonnet-5 2026-07-17 02:55:59Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:55:59Z)**_
+
+<tool-use data-tool-type="shell" data-tool-name="Bash"><details>
+<summary>Tool use: **Bash**</summary>
+
+`grep -n "🌉\|🏛\|plaza-tipo-icon\|tt-icon\|sidebar\|panel\|UT\b" "/Users/edgarguevara/Documents/cero efectivo/index.html" | head -100`
+
+```text
+14:  #sidebar{width:280px;min-width:280px;background:#fff;display:flex;flex-direction:column;border-right:1px solid #e2e8f0;z-index:1000;overflow:hidden}
+15:  #sidebar-header{padding:16px 18px 12px;background:linear-gradient(135deg,#7f1d1d 0%,#b91c1c 100%);border-bottom:3px solid #ef4444}
+16:  #sidebar-header h1{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;line-height:1.2;color:#fff}
+17:  #sidebar-header p{font-size:.68rem;color:rgba(255,255,255,.75);margin-top:3px}
+56:  .plaza-tipo-icon{font-size:11px;flex-shrink:0}
+69:  .tt-icon{font-size:18px;flex-shrink:0;line-height:1;margin-top:2px}
+130:    <div id="lock-logo">🏛</div>
+139:  <div id="sidebar">
+140:    <div id="sidebar-header">
+166:        <div class="legend-item"><span style="font-size:13px">🏛</span>Plaza de Cobro</div>
+167:        <div class="legend-item"><span style="font-size:13px">🌉</span>Puente</div>
+174:      <div class="layer-toggle"><span>🏛 Plazas de Cobro</span><label class="toggle-switch"><input type="checkbox" id="tgl-plz" checked><span class="toggle-slider"></span></label></div>
+175:      <div class="layer-toggle"><span>🌉 Puentes</span><label class="toggle-switch"><input type="checkbox" id="tgl-pte" checked><span class="toggle-slider"></span></label></div>
+333:  return '<div class="tt-inner"><div class="tt-header"><span class="tt-icon">' + (p.tipo==='puente'?'🌉':'🏛') + '</span>' +
+396:      item.innerHTML='<span class="plaza-tipo-icon">'+(p.tipo==='puente'?'🌉':'🏛')+'</span><span class="plaza-name">'+p.nombre+'</span><span class="plaza-owner '+p.owner.toLowerCase()+'">'+p.owner+'</span><span class="plaza-id">'+p.id+'</span>';
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:02Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:03Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+File content (295899 tokens) exceeds maximum allowed tokens (25000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:07Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:23Z)**_
+
+<tool-use data-tool-type="shell" data-tool-name="Bash"><details>
+<summary>Tool use: **Bash**</summary>
+
+`wc -l "/Users/edgarguevara/Documents/cero efectivo/index.html"; awk '{ print length, NR }' "/Users/edgarguevara/Documents/cero efectivo/index.html" | sort -rn | head -5`
+
+```text
+     593 /Users/edgarguevara/Documents/cero efectivo/index.html
+455730 219
+23194 218
+14585 217
+10029 418
+257 122
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:25Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:26Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+1	<!DOCTYPE html>
+2	<html lang="es">
+3	<head>
+4	<meta charset="UTF-8" />
+5	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+6	<title>Red Operada por CAPUFE — Tramos Reales y Plazas</title>
+7	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+8	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+9	<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+10	<style>
+11	  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+12	  html,body{height:100%;font-family:'Barlow',sans-serif;background:#f0f2f5;overflow:hidden}
+13	  #app{display:flex;height:100vh;width:100vw}
+14	  #sidebar{width:280px;min-width:280px;background:#fff;display:flex;flex-direction:column;border-right:1px solid #e2e8f0;z-index:1000;overflow:hidden}
+15	  #sidebar-header{padding:16px 18px 12px;background:linear-gradient(135deg,#7f1d1d 0%,#b91c1c 100%);border-bottom:3px solid #ef4444}
+16	  #sidebar-header h1{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;line-height:1.2;color:#fff}
+17	  #sidebar-header p{font-size:.68rem;color:rgba(255,255,255,.75);margin-top:3px}
+18	  #legend{padding:10px 16px;border-bottom:1px solid #e2e8f0}
+19	  #legend h3{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:6px;font-weight:600}
+20	  .legend-section{margin-bottom:6px}
+21	  .legend-section-title{font-size:.62rem;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;font-weight:600}
+22	  .legend-item{display:flex;align-items:center;gap:8px;font-size:.76rem;color:#374151;margin-bottom:3px}
+23	  .legend-line{width:24px;height:3px;border-radius:2px;flex-shrink:0}
+24	  .legend-line.capufe{background:#dc2626}
+25	  .legend-line.fonadin{background:#2563eb}
+26	  #layer-controls{padding:8px 16px;border-bottom:1px solid #e2e8f0;display:flex;flex-direction:column;gap:5px}
+27	  #layer-controls h3{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;font-weight:600;margin-bottom:2px}
+28	  .layer-toggle{display:flex;align-items:center;justify-content:space-between;font-size:.74rem;color:#374151}
+29	  .toggle-switch{position:relative;width:34px;height:17px}
+30	  .toggle-switch input{opacity:0;width:0;height:0}
+31	  .toggle-slider{position:absolute;cursor:pointer;inset:0;background:#cbd5e1;border-radius:17px;transition:.2s}
+32	  .toggle-slider:before{content:'';position:absolute;width:13px;height:13px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.2s}
+33	  .toggle-switch input:checked+.toggle-slider{background:#dc2626}
+34	  .toggle-switch input:checked+.toggle-slider.blue{background:#2563eb}
+35	  .toggle-switch input:checked+.toggle-slider:before{transform:translateX(17px)}
+36	  #filters{padding:8px 16px;border-bottom:1px solid #e2e8f0;display:flex;flex-direction:column;gap:5px}
+37	  #filters h3{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;font-weight:600}
+38	  #search-input{width:100%;padding:6px 10px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;color:#1e293b;font-family:'Barlow',sans-serif;font-size:.78rem;outline:none}
+39	  #search-input:focus{border-color:#dc2626}
+40	  .filter-row{display:flex;gap:4px;flex-wrap:wrap}
+41	  .filter-btn{padding:3px 7px;border:1px solid #cbd5e1;border-radius:4px;background:#f8fafc;color:#6b7280;font-size:.65rem;font-family:'Barlow Condensed',sans-serif;cursor:pointer;transition:all .15s;text-transform:uppercase}
+42	  .filter-btn:hover{background:#e2e8f0;color:#374151}
+43	  .filter-btn.active{border-color:#dc2626;background:#fef2f2;color:#dc2626;font-weight:700}
+44	  #stats-bar{padding:6px 16px;border-bottom:1px solid #e2e8f0;display:flex;gap:8px;justify-content:space-around;background:#f8fafc}
+45	  .stat{text-align:center}
+46	  .stat-num{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;line-height:1}
+47	  .stat-num.red{color:#dc2626}.stat-num.blue{color:#2563eb}.stat-num.gray{color:#374151}
+48	  .stat-label{font-size:.56rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em}
+49	  #plaza-list{flex:1;overflow-y:auto}
+50	  #plaza-list::-webkit-scrollbar{width:3px}
+51	  #plaza-list::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px}
+52	  .ur-header{padding:5px 16px 3px;font-family:'Barlow Condensed',sans-serif;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;background:#f8fafc;border-bottom:1px solid #f1f5f9;position:sticky;top:0;z-index:1}
+53	  .plaza-item{display:flex;align-items:center;gap:7px;padding:4px 16px;cursor:pointer;transition:background .1s;border-left:3px solid transparent;font-size:.74rem}
+54	  .plaza-item:hover{background:#f8fafc}
+55	  .plaza-item.active{background:#fef2f2;border-left-color:#dc2626}
+56	  .plaza-tipo-icon{font-size:11px;flex-shrink:0}
+57	  .plaza-name{flex:1;color:#1e293b;line-height:1.2}
+58	  .plaza-owner{font-size:.58rem;font-weight:700;padding:1px 4px;border-radius:3px;flex-shrink:0}
+59	  .plaza-owner.capufe{background:#fef2f2;color:#dc2626}
+60	  .plaza-owner.fonadin{background:#eff6ff;color:#2563eb}
+61	  .plaza-id{font-size:.62rem;color:#94a3b8}
+62	  #no-results{display:none;padding:20px;text-align:center;color:#94a3b8;font-size:.8rem}
+63	  #map{flex:1;z-index:1}
+64	  .leaflet-popup-content-wrapper{background:#fff!important;border:1px solid #e2e8f0!important;border-radius:10px!important;box-shadow:0 8px 24px rgba(0,0,0,.12)!important;padding:0!important;overflow:hidden}
+65	  .leaflet-popup-content{margin:0!important}
+66	  .leaflet-popup-tip{background:#fff!important}
+67	  .tt-inner{background:#fff;border-radius:10px;padding:10px 12px;min-width:190px;font-family:'Barlow',sans-serif}
+68	  .tt-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+69	  .tt-icon{font-size:18px;flex-shrink:0;line-height:1;margin-top:2px}
+70	  .tt-name{font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;color:#111827;line-height:1.2}
+71	  .tt-sub{font-size:.68rem;color:#9ca3af;margin-top:2px}
+72	  .tt-badges{display:flex;gap:4px;margin-bottom:7px}
+73	  .tt-badge{font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+74	  .tt-badge.capufe{background:#fef2f2;color:#dc2626;border:1px solid #fca5a5}
+75	  .tt-badge.fonadin{background:#eff6ff;color:#2563eb;border:1px solid #93c5fd}
+76	  .tt-badge.tipo{background:#f0fdf4;color:#16a34a;border:1px solid #86efac}
+77	  .tt-carriles{border-top:1px solid #f1f5f9;padding-top:7px}
+78	  .tt-carr-title{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;font-weight:600;margin-bottom:5px}
+79	  .tt-carr-grid{display:flex;gap:5px;flex-wrap:wrap}
+80	  .tt-carr-item{display:flex;flex-direction:column;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3px 8px;font-size:.65rem;color:#6b7280;min-width:52px}
+81	  .tt-carr-item span{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;line-height:1}
+82	  .tt-carr-item.mm span{color:#7c3aed}.tt-carr-item.ex span{color:#dc2626}
+83	  .tt-carr-item.exc span{color:#2563eb}.tt-carr-item.iv span{color:#059669}
+84	
+85	  /* Avance TAG — progress legend & UI */
+86	  #progress-banner {
+87	    display:none; padding:6px 16px; font-size:0.68rem;
+88	    background:#fef3c7; color:#92400e; border-bottom:1px solid #fde68a; line-height:1.3;
+89	  }
+90	  #progress-banner.ok { background:#dcfce7; color:#166534; border-bottom-color:#bbf7d0; }
+91	  #progress-banner.warn { background:#fef3c7; color:#92400e; border-bottom-color:#fde68a; }
+92	  #progress-legend { padding:10px 16px; border-bottom:1px solid #e2e8f0; }
+93	  #progress-legend h3 { font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:#9ca3af; margin-bottom:6px; font-weight:600; }
+94	  .progress-legend-item { display:flex; align-items:center; gap:8px; font-size:.76rem; color:#374151; margin-bottom:4px; }
+95	  .progress-legend-dot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
+96	  #overall-progress { padding:8px 16px; border-bottom:1px solid #e2e8f0; text-align:center; }
+97	  #overall-progress .op-pct { font-family:'Barlow Condensed',sans-serif; font-size:1.8rem; font-weight:900; line-height:1; }
+98	  #overall-progress .op-label { font-size:.62rem; color:#9ca3af; text-transform:uppercase; letter-spacing:.06em; margin-top:2px; margin-bottom:8px; }
+99	  #btn-cargar {
+100	    width:100%; padding:7px 10px; border-radius:7px; border:1px solid #cbd5e1;
+101	    background:#f8fafc; color:#374151; font-family:'Barlow',sans-serif;
+102	    font-size:.76rem; font-weight:600; cursor:pointer; transition:all .15s;
+103	  }
+104	  #btn-cargar:hover:not(:disabled) { background:#e2e8f0; border-color:#94a3b8; }
+105	  #btn-cargar:disabled { opacity:.6; cursor:default; }
+106	  .tt-progress { border-top:1px solid #f1f5f9; padding-top:7px; margin-top:7px; }
+107	  .tt-progress-title { font-size:.65rem; text-transform:uppercase; letter-spacing:.08em; color:#9ca3af; font-weight:600; margin-bottom:5px; }
+108	  .tt-progress-bar-track { width:100%; height:10px; background:#f1f5f9; border-radius:5px; overflow:hidden; margin-bottom:4px; }
+109	  .tt-progress-bar-fill { height:100%; border-radius:5px; transition:width 0.3s; }
+110	  .tt-progress-detail { font-size:.68rem; color:#6b7280; display:flex; justify-content:space-between; }
+111	  .tt-progress-detail strong { color:#111827; }
+112	
+113	
+114	  /* ── Pantalla de acceso ─────────────────────────────────────────── */
+115	  #lock-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#7f1d1d 0%,#b91c1c 100%);display:flex;align-items:center;justify-content:center}
+116	  #lock-box{background:#fff;border-radius:16px;padding:36px 32px;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+117	  #lock-logo{font-size:2.4rem;margin-bottom:10px}
+118	  #lock-box h2{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#1e293b;margin-bottom:4px}
+119	  #lock-box p{font-size:.78rem;color:#9ca3af;margin-bottom:22px}
+120	  #lock-pwd{width:100%;padding:10px 14px;border:1.5px solid #cbd5e1;border-radius:8px;font-family:'Barlow',sans-serif;font-size:.9rem;color:#1e293b;outline:none;margin-bottom:10px;transition:border-color .15s}
+121	  #lock-pwd:focus{border-color:#dc2626}
+122	  #lock-btn{width:100%;padding:11px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:background .15s}
+123	  #lock-btn:hover{background:#b91c1c}
+124	  #lock-err{font-size:.75rem;color:#dc2626;margin-top:6px;min-height:18px}
+125	</style>
+126	</head>
+127	<body>
+128	<div id="lock-screen">
+129	  <div id="lock-box">
+130	    <div id="lock-logo">🏛</div>
+131	    <h2>Red CAPUFE</h2>
+132	    <p>Control de Avances · Transición a TAG<br>Acceso restringido</p>
+133	    <input type="password" id="lock-pwd" placeholder="Contraseña" autocomplete="current-password" />
+134	    <button id="lock-btn">Entrar</button>
+135	    <div id="lock-err"></div>
+136	  </div>
+137	</div>
+138	<div id="app">
+139	  <div id="sidebar">
+140	    <div id="sidebar-header">
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:28Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:30Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+File content (290389 tokens) exceeds maximum allowed tokens (25000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:33Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:56:33Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+140	    <div id="sidebar-header">
+141	      <h1>Red Operada por CAPUFE</h1>
+142	      <p>Control de Avances · Transición a TAG</p>
+143	    </div>
+144	    <div id="progress-banner"></div>
+145	    <div id="overall-progress">
+146	      <div class="op-pct" id="op-pct-value" style="color:#9ca3af;">—</div>
+147	      <div class="op-label">Avance global a TAG</div>
+148	      <button id="btn-cargar">🔄 Actualizar datos</button>
+149	    </div>
+150	    <div id="progress-legend">
+151	      <h3>Avance de transición a TAG</h3>
+152	      <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#2563eb;"></div>Pendiente (0%)</div>
+153	      <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#f59e0b;"></div>En proceso</div>
+154	      <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#22c55e;"></div>Terminado (100%)</div>
+155	      <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#9ca3af;"></div>Sin datos</div>
+156	    </div>
+157	    <div id="legend">
+158	      <h3>Simbología</h3>
+159	      <div class="legend-section">
+160	        <div class="legend-section-title">Tramos (trazo real)</div>
+161	        <div class="legend-item"><div class="legend-line capufe"></div>Red CAPUFE</div>
+162	        <div class="legend-item"><div class="legend-line fonadin"></div>Red FONADIN</div>
+163	      </div>
+164	      <div class="legend-section">
+165	        <div class="legend-section-title">Plazas</div>
+166	        <div class="legend-item"><span style="font-size:13px">🏛</span>Plaza de Cobro</div>
+167	        <div class="legend-item"><span style="font-size:13px">🌉</span>Puente</div>
+168	      </div>
+169	    </div>
+170	    <div id="layer-controls">
+171	      <h3>Capas visibles</h3>
+172	      <div class="layer-toggle"><span>🔴 Tramos CAPUFE</span><label class="toggle-switch"><input type="checkbox" id="tgl-cl" checked><span class="toggle-slider"></span></label></div>
+173	      <div class="layer-toggle"><span>🔵 Tramos FONADIN</span><label class="toggle-switch"><input type="checkbox" id="tgl-fl" checked><span class="toggle-slider blue"></span></label></div>
+174	      <div class="layer-toggle"><span>🏛 Plazas de Cobro</span><label class="toggle-switch"><input type="checkbox" id="tgl-plz" checked><span class="toggle-slider"></span></label></div>
+175	      <div class="layer-toggle"><span>🌉 Puentes</span><label class="toggle-switch"><input type="checkbox" id="tgl-pte" checked><span class="toggle-slider"></span></label></div>
+176	    </div>
+177	    <div id="filters">
+178	      <h3>Filtrar</h3>
+179	      <input type="text" id="search-input" placeholder="Buscar plaza, puente, UR..." />
+180	      <div class="filter-row" id="ur-filters"><button class="filter-btn active" data-ur="all">Todas</button></div>
+181	    </div>
+182	    <div id="stats-bar">
+183	      <div class="stat"><div class="stat-num gray" id="stat-total">—</div><div class="stat-label">Total</div></div>
+184	      <div class="stat"><div class="stat-num red" id="stat-capufe">—</div><div class="stat-label">CAPUFE</div></div>
+185	      <div class="stat"><div class="stat-num blue" id="stat-fonadin">—</div><div class="stat-label">FONADIN</div></div>
+186	    </div>
+187	    <div id="plaza-list"></div>
+188	    <div id="no-results">Sin resultados</div>
+189	  </div>
+190	  <div id="map"></div>
+191	</div>
+192	
+193	<script>
+194	/* ── Control de acceso ── */
+195	(function(){
+196	  var PWD='capufe26', KEY='capufe_auth';
+197	  if(sessionStorage.getItem(KEY)==='1'){
+198	    document.getElementById('lock-screen').style.display='none';
+199	    return;
+200	  }
+201	  function tryEnter(){
+202	    var val=document.getElementById('lock-pwd').value;
+203	    if(val===PWD){
+204	      sessionStorage.setItem(KEY,'1');
+205	      document.getElementById('lock-screen').style.display='none';
+206	    } else {
+207	      document.getElementById('lock-err').textContent='Contraseña incorrecta';
+208	      document.getElementById('lock-pwd').value='';
+209	      document.getElementById('lock-pwd').focus();
+210	    }
+211	  }
+212	  document.getElementById('lock-btn').addEventListener('click',tryEnter);
+213	  document.getElementById('lock-pwd').addEventListener('keydown',function(e){if(e.key==='Enter')tryEnter();});
+214	  document.getElementById('lock-pwd').focus();
+215	})();
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:17Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:19Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+325	    progressBlock = '<div class="tt-progress">' +
+326	      '<div class="tt-progress-title">Avance a TAG</div>' +
+327	      '<div class="tt-progress-bar-track"><div class="tt-progress-bar-fill" style="width:' + (pct||0) + '%;background:' + color + ';"></div></div>' +
+328	      '<div class="tt-progress-detail"><span>' + a.ejecutado + ' / ' + a.convertibles + ' carriles</span><strong style="color:' + color + '">' + pctLabel + '</strong></div>' +
+329	      (a.fijos > 0 ? '<div class="tt-progress-detail" style="margin-top:2px;"><span>Fijos Multimodal (no convierten)</span><strong>' + a.fijos + '</strong></div>' : '') +
+330	      '</div>';
+331	  }
+332	
+333	  return '<div class="tt-inner"><div class="tt-header"><span class="tt-icon">' + (p.tipo==='puente'?'🌉':'🏛') + '</span>' +
+334	    '<div><div class="tt-name">' + p.nombre + '</div><div class="tt-sub">Plaza ' + p.id + ' · U.R. ' + p.ur + '</div></div></div>' +
+335	    '<div class="tt-badges"><span class="tt-badge ' + p.owner.toLowerCase() + '">' + p.owner + '</span>' +
+336	    '<span class="tt-badge tipo">' + (p.tipo==='puente'?'Puente':'Plaza de Cobro') + '</span></div>' +
+337	    carrilGrid + progressBlock + '</div>';
+338	}
+339	
+340	PLAZAS.forEach(p => {
+341	  const marker = L.marker([p.lat,p.lng], { icon: makeProgressIcon(p.tipo, null), zIndexOffset: p.tipo==='puente'?500:0 });
+342	  marker.bindPopup(buildPlazaPopup(p), { maxWidth:240 });
+343	  marker.addTo(p.tipo==='puente' ? layerPuentes : layerPlazas);
+344	  markers[p.id] = marker;
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:21Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+390	  filtered.forEach(p=>(byUR[p.ur]=byUR[p.ur]||[]).push(p));
+391	  Object.entries(byUR).forEach(([ur,plazas])=>{
+392	    const h=document.createElement('div'); h.className='ur-header';
+393	    h.textContent='U.R. '+ur+' ('+plazas.length+')'; listEl.appendChild(h);
+394	    plazas.forEach(p=>{
+395	      const item=document.createElement('div'); item.className='plaza-item';
+396	      item.innerHTML='<span class="plaza-tipo-icon">'+(p.tipo==='puente'?'🌉':'🏛')+'</span><span class="plaza-name">'+p.nombre+'</span><span class="plaza-owner '+p.owner.toLowerCase()+'">'+p.owner+'</span><span class="plaza-id">'+p.id+'</span>';
+397	      item.addEventListener('click',()=>{
+398	        document.querySelectorAll('.plaza-item').forEach(i=>i.classList.remove('active')); item.classList.add('active');
+399	        map.setView([p.lat,p.lng],12,{animate:true});
+400	        setTimeout(()=>markers[p.id]?.openPopup(),400);
+401	      });
+402	      listEl.appendChild(item);
+403	    });
+404	  });
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:26Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:27Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:30Z)**_
+
+Ahora aplico el fix de layout (el clásico bug de flexbox: la lista de plazas necesita `min-height:0` y las secciones fijas de arriba necesitan `flex-shrink:0`, si no el `overflow:hidden` del sidebar recorta la lista).
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:33Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:35Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:45Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:46Z)**_
+
+Ahora reemplazo los emojis 🏛/🌉 por las imágenes en las distintas partes del menú y popups.
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:47Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:50Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:54Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:56Z)**_
+
+Ahora los íconos en el popup del mapa y en la lista de plazas:
+
+_**Agent (claude-sonnet-5 2026-07-17 02:57:58Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:58:01Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:58:05Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:58:06Z)**_
+
+<tool-use data-tool-type="shell" data-tool-name="Bash"><details>
+<summary>Tool use: **Bash**</summary>
+
+`grep -n "🏛\|🌉" "/Users/edgarguevara/Documents/cero efectivo/index.html"`
+
+```text
+(Bash completed with no output)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:58:11Z)**_
+
+Todos los emojis fueron reemplazados. Resumen de cambios:
+
+1. **Íconos del menú**: reemplacé 🏛/🌉 por `img/toll.png` y `img/bridge.png` en la pantalla de acceso, la simbología, los toggles de capas, la lista de plazas y los popups del mapa.
+2. **Layout roto**: el bug era clásico de flexbox — `#plaza-list` tenía `flex:1` pero sin `min-height:0`, y las secciones de arriba (banner, avance global, leyenda, capas, filtros de UR/UT, stats) no tenían `flex-shrink:0`. Como `#sidebar` usa `overflow:hidden`, cuando el contenido superior crecía, la lista de plazas se recortaba en vez de mostrarse con scroll. Ahora fijé las secciones superiores (`#sidebar>*{flex-shrink:0}`) y le di a `#plaza-list` un `min-height:120px` con scroll propio garantizado.

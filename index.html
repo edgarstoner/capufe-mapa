@@ -11,7 +11,8 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;font-family:'Barlow',sans-serif;background:#f0f2f5;overflow:hidden}
   #app{display:flex;height:100vh;width:100vw}
-  #sidebar{width:280px;min-width:280px;background:#fff;display:flex;flex-direction:column;border-right:1px solid #e2e8f0;z-index:1000;overflow:hidden}
+  #sidebar{width:280px;min-width:280px;background:#fff;display:flex;flex-direction:column;border-right:1px solid #e2e8f0;z-index:1000;overflow:hidden;height:100vh}
+  #sidebar>*{flex-shrink:0}
   #sidebar-header{padding:16px 18px 12px;background:linear-gradient(135deg,#7f1d1d 0%,#b91c1c 100%);border-bottom:3px solid #ef4444}
   #sidebar-header h1{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;line-height:1.2;color:#fff}
   #sidebar-header p{font-size:.68rem;color:rgba(255,255,255,.75);margin-top:3px}
@@ -46,7 +47,7 @@
   .stat-num{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;line-height:1}
   .stat-num.red{color:#dc2626}.stat-num.blue{color:#2563eb}.stat-num.gray{color:#374151}
   .stat-label{font-size:.56rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em}
-  #plaza-list{flex:1;overflow-y:auto}
+  #plaza-list{flex:1 1 auto;min-height:120px;overflow-y:auto}
   #plaza-list::-webkit-scrollbar{width:3px}
   #plaza-list::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px}
   .ur-header{padding:5px 16px 3px;font-family:'Barlow Condensed',sans-serif;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;background:#f8fafc;border-bottom:1px solid #f1f5f9;position:sticky;top:0;z-index:1}
@@ -54,6 +55,7 @@
   .plaza-item:hover{background:#f8fafc}
   .plaza-item.active{background:#fef2f2;border-left-color:#dc2626}
   .plaza-tipo-icon{font-size:11px;flex-shrink:0}
+  .menu-icon{width:14px;height:14px;object-fit:contain;flex-shrink:0;vertical-align:middle}
   .plaza-name{flex:1;color:#1e293b;line-height:1.2}
   .plaza-owner{font-size:.58rem;font-weight:700;padding:1px 4px;border-radius:3px;flex-shrink:0}
   .plaza-owner.capufe{background:#fef2f2;color:#dc2626}
@@ -127,7 +129,7 @@
 <body>
 <div id="lock-screen">
   <div id="lock-box">
-    <div id="lock-logo">🏛</div>
+    <div id="lock-logo"><img src="img/toll.png" style="width:2.4rem;height:2.4rem;object-fit:contain;"></div>
     <h2>Red CAPUFE</h2>
     <p>Control de Avances · Transición a TAG<br>Acceso restringido</p>
     <input type="password" id="lock-pwd" placeholder="Contraseña" autocomplete="current-password" />
@@ -163,16 +165,16 @@
       </div>
       <div class="legend-section">
         <div class="legend-section-title">Plazas</div>
-        <div class="legend-item"><span style="font-size:13px">🏛</span>Plaza de Cobro</div>
-        <div class="legend-item"><span style="font-size:13px">🌉</span>Puente</div>
+        <div class="legend-item"><img class="menu-icon" src="img/toll.png">Plaza de Cobro</div>
+        <div class="legend-item"><img class="menu-icon" src="img/bridge.png">Puente</div>
       </div>
     </div>
     <div id="layer-controls">
       <h3>Capas visibles</h3>
       <div class="layer-toggle"><span>🔴 Tramos CAPUFE</span><label class="toggle-switch"><input type="checkbox" id="tgl-cl" checked><span class="toggle-slider"></span></label></div>
       <div class="layer-toggle"><span>🔵 Tramos FONADIN</span><label class="toggle-switch"><input type="checkbox" id="tgl-fl" checked><span class="toggle-slider blue"></span></label></div>
-      <div class="layer-toggle"><span>🏛 Plazas de Cobro</span><label class="toggle-switch"><input type="checkbox" id="tgl-plz" checked><span class="toggle-slider"></span></label></div>
-      <div class="layer-toggle"><span>🌉 Puentes</span><label class="toggle-switch"><input type="checkbox" id="tgl-pte" checked><span class="toggle-slider"></span></label></div>
+      <div class="layer-toggle"><span><img class="menu-icon" src="img/toll.png"> Plazas de Cobro</span><label class="toggle-switch"><input type="checkbox" id="tgl-plz" checked><span class="toggle-slider"></span></label></div>
+      <div class="layer-toggle"><span><img class="menu-icon" src="img/bridge.png"> Puentes</span><label class="toggle-switch"><input type="checkbox" id="tgl-pte" checked><span class="toggle-slider"></span></label></div>
     </div>
     <div id="filters">
       <h3>Filtrar</h3>
@@ -330,7 +332,7 @@ function buildPlazaPopup(p) {
       '</div>';
   }
 
-  return '<div class="tt-inner"><div class="tt-header"><span class="tt-icon">' + (p.tipo==='puente'?'🌉':'🏛') + '</span>' +
+  return '<div class="tt-inner"><div class="tt-header"><span class="tt-icon"><img src="img/' + (p.tipo==='puente'?'bridge.png':'toll.png') + '" style="width:18px;height:18px;object-fit:contain;"></span>' +
     '<div><div class="tt-name">' + p.nombre + '</div><div class="tt-sub">Plaza ' + p.id + ' · U.R. ' + p.ur + '</div></div></div>' +
     '<div class="tt-badges"><span class="tt-badge ' + p.owner.toLowerCase() + '">' + p.owner + '</span>' +
     '<span class="tt-badge tipo">' + (p.tipo==='puente'?'Puente':'Plaza de Cobro') + '</span></div>' +
@@ -393,7 +395,7 @@ const renderList = () => {
     h.textContent='U.R. '+ur+' ('+plazas.length+')'; listEl.appendChild(h);
     plazas.forEach(p=>{
       const item=document.createElement('div'); item.className='plaza-item';
-      item.innerHTML='<span class="plaza-tipo-icon">'+(p.tipo==='puente'?'🌉':'🏛')+'</span><span class="plaza-name">'+p.nombre+'</span><span class="plaza-owner '+p.owner.toLowerCase()+'">'+p.owner+'</span><span class="plaza-id">'+p.id+'</span>';
+      item.innerHTML='<img class="menu-icon" src="img/'+(p.tipo==='puente'?'bridge.png':'toll.png')+'"><span class="plaza-name">'+p.nombre+'</span><span class="plaza-owner '+p.owner.toLowerCase()+'">'+p.owner+'</span><span class="plaza-id">'+p.id+'</span>';
       item.addEventListener('click',()=>{
         document.querySelectorAll('.plaza-item').forEach(i=>i.classList.remove('active')); item.classList.add('active');
         map.setView([p.lat,p.lng],12,{animate:true});
