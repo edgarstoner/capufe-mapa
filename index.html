@@ -306,19 +306,29 @@ const makeProgressIcon = (tipo, pct) => {
 // the new "Avance a TAG" progress section.
 function buildPlazaPopup(p) {
   const c = p.carriles || {};
+  const a = p.avance;
   const totalC = c.total || 0;
+  // Cuando hay avance, MULTIMODAL/EXCLUSIVO se recalculan a partir del propio
+  // avance (carriles y ejecutado) en vez del inventario estático, para que el
+  // desglose de arriba y la barra de "Avance a TAG" cuenten la misma historia:
+  // los carriles ejecutados dejan de contarse como multimodal y pasan a exclusivo.
+  let mmCount = c.MULTIMODAL || 0;
+  let excCount = c.EXCLUSIVO || 0;
+  if (a && typeof a.carriles === 'number') {
+    excCount = a.ejecutado;
+    mmCount = Math.max(0, a.carriles - a.ejecutado);
+  }
   const carrilGrid = totalC > 0 ? (
-    '<div class="tt-carriles"><div class="tt-carr-title">Carriles (' + totalC + ' total)</div><div class="tt-carr-grid">' +
-    (c.MULTIMODAL ? '<div class="tt-carr-item mm"><span>'+c.MULTIMODAL+'</span>Multimodal</div>' : '') +
+    '<div class="tt-carriles"><div class="tt-carr-title">Carriles (' + totalC + ' total' + (a ? ' · a hoy' : '') + ')</div><div class="tt-carr-grid">' +
+    (mmCount ? '<div class="tt-carr-item mm"><span>'+mmCount+'</span>Multimodal</div>' : '') +
     (c.EXPRESS ? '<div class="tt-carr-item ex"><span>'+c.EXPRESS+'</span>Exprés</div>' : '') +
-    (c.EXCLUSIVO ? '<div class="tt-carr-item exc"><span>'+c.EXCLUSIVO+'</span>Exclusivo</div>' : '') +
+    (excCount ? '<div class="tt-carr-item exc"><span>'+excCount+'</span>Exclusivo</div>' : '') +
     (c.IAVE ? '<div class="tt-carr-item iv"><span>'+c.IAVE+'</span>IAVE</div>' : '') +
     '</div></div>'
   ) : '';
 
   let progressBlock = '';
-  if (p.avance) {
-    const a = p.avance;
+  if (a) {
     const pct = a.pct === null ? null : Math.round(a.pct);
     const color = progressColor(a.pct);
     const STATE_LABELS = { sinDatos:'Sin datos', pendiente:'Pendiente', enProceso:'En proceso', terminado:'Terminado' };

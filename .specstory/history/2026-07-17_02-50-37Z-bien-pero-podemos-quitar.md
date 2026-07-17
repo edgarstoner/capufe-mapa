@@ -654,3 +654,218 @@ Todos los emojis fueron reemplazados. Resumen de cambios:
 
 1. **Íconos del menú**: reemplacé 🏛/🌉 por `img/toll.png` y `img/bridge.png` en la pantalla de acceso, la simbología, los toggles de capas, la lista de plazas y los popups del mapa.
 2. **Layout roto**: el bug era clásico de flexbox — `#plaza-list` tenía `flex:1` pero sin `min-height:0`, y las secciones de arriba (banner, avance global, leyenda, capas, filtros de UR/UT, stats) no tenían `flex-shrink:0`. Como `#sidebar` usa `overflow:hidden`, cuando el contenido superior crecía, la lista de plazas se recortaba en vez de mostrarse con scroll. Ahora fijé las secciones superiores (`#sidebar>*{flex-shrink:0}`) y le di a `#plaza-list` un `min-height:120px` con scroll propio garantizado.
+
+---
+
+_**User (2026-07-17 03:03:28Z)**_
+
+Ahora en la card que se muestra cuando hago click en una plaza de cobro o en un puente, mejoremso la visualización del avance, por ejemplo en la plaza de cobro Tlalpan, se muestran que son 05 carrile sne tootal 20 multimodales y 8 exlcuisovs, pero el avance de conversion de multimodales a exlcusivos, que en este caso, son 22 carrile, no se corresponden, me explico? porque aunque se muestra el avance, de 15 exlcusivos, en el total de carriles se siguen apareciendo 20 multimodales y 8 exlcuivos, cuando ahí quedarán solo 6 multimodales que no se convertiran de momento.
+
+---
+
+_**Agent (claude-sonnet-5 2026-07-17 03:03:35Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:03:36Z)**_
+
+<tool-use data-tool-type="shell" data-tool-name="Bash"><details>
+<summary>Tool use: **Bash**</summary>
+
+`grep -n "carrilGrid\|tt-carr\|convertibles\|ejecutado\|carriles\|mm\b\|\.ex\b\|exc\b\|\.iv\b\|AVANCE_DATA\|fijos" "/Users/edgarguevara/Documents/cero efectivo/index.html" | grep -v "^219:\|^217:\|^218:\|^418:" | head -150`
+
+```text
+<persisted-output>
+Output too large (35.9KB). Full output saved to: /Users/edgarguevara/.claude/projects/-Users-edgarguevara-Documents-cero-efectivo/17719198-75b1-44db-a8ba-a0d54391965a/tool-results/buo8n4yi0.txt
+
+Preview (first 2KB):
+79:  .tt-carriles{border-top:1px solid #f1f5f9;padding-top:7px}
+80:  .tt-carr-title{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;font-weight:600;margin-bottom:5px}
+81:  .tt-carr-grid{display:flex;gap:5px;flex-wrap:wrap}
+82:  .tt-carr-item{display:flex;flex-direction:column;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3px 8px;font-size:.65rem;color:#6b7280;min-width:52px}
+83:  .tt-carr-item span{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;line-height:1}
+84:  .tt-carr-item.mm span{color:#7c3aed}.tt-carr-item.ex span{color:#dc2626}
+85:  .tt-carr-item.exc span{color:#2563eb}.tt-carr-item.iv span{color:#059669}
+220:const EXCEL_DATA = {"116":{"ur":"Veracruz","red":"FONADIN","nombre":"Cuitláhuac","lat":18.839649278387014,"lng":-96.74683889,"carriles":{"MULTIMODAL":12,"EXPRESS":0,"EXCLUSIVO":0,"IAVE":0,"total":13}},"117":{"ur":"Veracruz","red":"FONADIN","nombre":"Paso Del Toro","lat":19.08251576219505,"lng":-96.19838531,"carriles":{"MULTIMODAL":12,"EXPRESS":0,"EXCLUSIVO":0,"IAVE":0,"total":12}},"177":{"ur":"Veracruz","red":"FONADIN","nombre":"Totomoxtle","lat":20.462175311793413,"lng":-97.24596966,"carriles":{"MULTIMODAL":2,"EXPRESS":0,"EXCLUSIVO":0,"IAVE":0,"total":2}},"33":{"ur":"Veracruz","red":"CAPUFE","nombre":"Pte. Nautla","lat":20.210456577428225,"lng":-96.77871758,"carriles":{"MULTIMODAL":3,"EXPRESS":0,"EXCLUSIVO":0,"IAVE":0,"total":3}},"43":{"ur":"Veracruz","red":"CAPUFE","nombre":"Pte. Tecolutla","lat":20.4383183333108,"lng":-97.08638647,"carriles":{"MULTIMODAL":4,"EXPRESS":0,"EXCLUSIVO":0,"IAVE":0,"total":4}},"22":{"ur":"Veracruz","red":"CAPUFE","nombre":"Pte.  Alvarado","lat":18.77011284418576,"lng":-95.74447931,"carriles":{"MULTIMODAL":4,"EXPRESS":0,"EXCLUSIVO":0,"IAVE":0,"total":4}},"63":{"ur":"Veracruz","red":"CAPUFE","nombre":"Pte.  Tlacotalpan","lat":18.704810624710397,"lng":-95.64136941,"carriles":{"MULTIMODAL":2,"EXPRESS":0,"EXCLUSIVO":0,"IAVE":0,"tota
+...
+</persisted-output>
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:03:38Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:03:42Z)**_
+
+<tool-use data-tool-type="shell" data-tool-name="Bash"><details>
+<summary>Tool use: **Bash**</summary>
+
+`grep -n "carrilGrid\|tt-carr\|convertibles\|ejecutado\|AVANCE_DATA\|fijos\b\|function buildPlazaPopup\|carriles\." "/Users/edgarguevara/Documents/cero efectivo/index.html" | awk -F: '$1<300 || $1>420' `
+
+```text
+79:  .tt-carriles{border-top:1px solid #f1f5f9;padding-top:7px}
+80:  .tt-carr-title{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;font-weight:600;margin-bottom:5px}
+81:  .tt-carr-grid{display:flex;gap:5px;flex-wrap:wrap}
+82:  .tt-carr-item{display:flex;flex-direction:column;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:3px 8px;font-size:.65rem;color:#6b7280;min-width:52px}
+83:  .tt-carr-item span{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;line-height:1}
+84:  .tt-carr-item.mm span{color:#7c3aed}.tt-carr-item.ex span{color:#dc2626}
+85:  .tt-carr-item.exc span{color:#2563eb}.tt-carr-item.iv span{color:#059669}
+275:  pendiente: '#2563eb', // azul  — 0% ejecutado
+277:  terminado: '#22c55e', // verde — 100% ejecutado
+422:// AVANCE_DATA starts as the embedded seed (last known snapshot) so the map
+425:let AVANCE_DATA = AVANCE_DATA_SEED;
+472:// Applies whatever is currently in AVANCE_DATA to PLAZAS + markers + popups
+481:    const a = AVANCE_DATA[key];
+485:      totalEjecutado += a.ejecutado;
+497:  // Porcentaje global: misma fórmula que el Sheet (ejecutado / carriles totales)
+518:  const fijosIdx     = headerRow.findIndex(h => /fijos/i.test(h));
+520:  const ejecutadoIdxs = [];
+521:  subHeaderRow.forEach((h, i) => { if (h.trim().toLowerCase() === 'ejecutado') ejecutadoIdxs.push(i); });
+535:    const fijos        = fijosIdx > -1 ? (parseFloat(r[fijosIdx]) || 0) : 0;
+536:    const convertibles = Math.max(0, carriles - fijos);
+538:    let ejecutado = 0;
+539:    ejecutadoIdxs.forEach(idx => { const v = parseFloat(r[idx]); if (!isNaN(v) && v > ejecutado) ejecutado = v; });
+547:    } else if (convertibles > 0) {
+548:      pct = (ejecutado / convertibles) * 100;
+551:    newData[pid] = { carriles, fijos, convertibles, ejecutado, pct };
+568:    AVANCE_DATA = newData;
+588:try { const saved = localStorage.getItem(STORAGE_KEY); if (saved) AVANCE_DATA = JSON.parse(saved); } catch(e) {}
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:03:44Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:03:45Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+303	};
+304	
+305	// Rebuilds a plaza's popup HTML including the carriles grid (existing) plus
+306	// the new "Avance a TAG" progress section.
+307	function buildPlazaPopup(p) {
+308	  const c = p.carriles || {};
+309	  const totalC = c.total || 0;
+310	  const carrilGrid = totalC > 0 ? (
+311	    '<div class="tt-carriles"><div class="tt-carr-title">Carriles (' + totalC + ' total)</div><div class="tt-carr-grid">' +
+312	    (c.MULTIMODAL ? '<div class="tt-carr-item mm"><span>'+c.MULTIMODAL+'</span>Multimodal</div>' : '') +
+313	    (c.EXPRESS ? '<div class="tt-carr-item ex"><span>'+c.EXPRESS+'</span>Exprés</div>' : '') +
+314	    (c.EXCLUSIVO ? '<div class="tt-carr-item exc"><span>'+c.EXCLUSIVO+'</span>Exclusivo</div>' : '') +
+315	    (c.IAVE ? '<div class="tt-carr-item iv"><span>'+c.IAVE+'</span>IAVE</div>' : '') +
+316	    '</div></div>'
+317	  ) : '';
+318	
+319	  let progressBlock = '';
+320	  if (p.avance) {
+321	    const a = p.avance;
+322	    const pct = a.pct === null ? null : Math.round(a.pct);
+323	    const color = progressColor(a.pct);
+324	    const STATE_LABELS = { sinDatos:'Sin datos', pendiente:'Pendiente', enProceso:'En proceso', terminado:'Terminado' };
+325	    const stateLabel = STATE_LABELS[progressState(a.pct)];
+326	    const pctLabel = pct === null ? stateLabel : stateLabel + ' · ' + pct + '%';
+327	    progressBlock = '<div class="tt-progress">' +
+328	      '<div class="tt-progress-title">Avance a TAG</div>' +
+329	      '<div class="tt-progress-bar-track"><div class="tt-progress-bar-fill" style="width:' + (pct||0) + '%;background:' + color + ';"></div></div>' +
+330	      '<div class="tt-progress-detail"><span>' + a.ejecutado + ' / ' + a.convertibles + ' carriles</span><strong style="color:' + color + '">' + pctLabel + '</strong></div>' +
+331	      (a.fijos > 0 ? '<div class="tt-progress-detail" style="margin-top:2px;"><span>Fijos Multimodal (no convierten)</span><strong>' + a.fijos + '</strong></div>' : '') +
+332	      '</div>';
+333	  }
+334	
+335	  return '<div class="tt-inner"><div class="tt-header"><span class="tt-icon"><img src="img/' + (p.tipo==='puente'?'bridge.png':'toll.png') + '" style="width:18px;height:18px;object-fit:contain;"></span>' +
+336	    '<div><div class="tt-name">' + p.nombre + '</div><div class="tt-sub">Plaza ' + p.id + ' · U.R. ' + p.ur + '</div></div></div>' +
+337	    '<div class="tt-badges"><span class="tt-badge ' + p.owner.toLowerCase() + '">' + p.owner + '</span>' +
+338	    '<span class="tt-badge tipo">' + (p.tipo==='puente'?'Puente':'Plaza de Cobro') + '</span></div>' +
+339	    carrilGrid + progressBlock + '</div>';
+340	}
+341	
+342	PLAZAS.forEach(p => {
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:05:39Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:05:40Z)**_
+
+Entiendo el problema: la tarjeta muestra el desglose de carriles (Multimodal/Exclusivo) siempre con los valores **originales** del inventario estático, pero el bloque de "Avance a TAG" usa datos **dinámicos** del Sheet (`ejecutado`/`convertibles`). Como esos dos vienen de fuentes distintas, cuando ya se convirtieron carriles, el desglose de arriba no lo refleja — sigue mostrando 20 multimodales y 8 exclusivos aunque ya haya 15 convertidos.
+
+Voy a hacer que el desglose de Multimodal/Exclusivo se recalcule usando el avance real cuando existe, para que ambos bloques cuenten la misma historia.
+
+_**Agent (claude-sonnet-5 2026-07-17 03:05:47Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:05:51Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:05:52Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+305	// Rebuilds a plaza's popup HTML including the carriles grid (existing) plus
+306	// the new "Avance a TAG" progress section.
+307	function buildPlazaPopup(p) {
+308	  const c = p.carriles || {};
+309	  const a = p.avance;
+310	  const totalC = c.total || 0;
+311	  // Cuando hay avance, MULTIMODAL/EXCLUSIVO se recalculan a partir del propio
+312	  // avance (carriles y ejecutado) en vez del inventario estático, para que el
+313	  // desglose de arriba y la barra de "Avance a TAG" cuenten la misma historia:
+314	  // los carriles ejecutados dejan de contarse como multimodal y pasan a exclusivo.
+315	  let mmCount = c.MULTIMODAL || 0;
+316	  let excCount = c.EXCLUSIVO || 0;
+317	  if (a && typeof a.carriles === 'number') {
+318	    excCount = a.ejecutado;
+319	    mmCount = Math.max(0, a.carriles - a.ejecutado);
+320	  }
+321	  const carrilGrid = totalC > 0 ? (
+322	    '<div class="tt-carriles"><div class="tt-carr-title">Carriles (' + totalC + ' total' + (a ? ' · a hoy' : '') + ')</div><div class="tt-carr-grid">' +
+323	    (mmCount ? '<div class="tt-carr-item mm"><span>'+mmCount+'</span>Multimodal</div>' : '') +
+324	    (c.EXPRESS ? '<div class="tt-carr-item ex"><span>'+c.EXPRESS+'</span>Exprés</div>' : '') +
+325	    (excCount ? '<div class="tt-carr-item exc"><span>'+excCount+'</span>Exclusivo</div>' : '') +
+326	    (c.IAVE ? '<div class="tt-carr-item iv"><span>'+c.IAVE+'</span>IAVE</div>' : '') +
+327	    '</div></div>'
+328	  ) : '';
+329	
+330	  let progressBlock = '';
+331	  if (p.avance) {
+332	    const a = p.avance;
+333	    const pct = a.pct === null ? null : Math.round(a.pct);
+334	    const color = progressColor(a.pct);
+335	    const STATE_LABELS = { sinDatos:'Sin datos', pendiente:'Pendiente', enProceso:'En proceso', terminado:'Terminado' };
+336	    const stateLabel = STATE_LABELS[progressState(a.pct)];
+337	    const pctLabel = pct === null ? stateLabel : stateLabel + ' · ' + pct + '%';
+338	    progressBlock = '<div class="tt-progress">' +
+339	      '<div class="tt-progress-title">Avance a TAG</div>' +
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:05:55Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:05:57Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:06:05Z)**_
+
+Listo. Ahora en las plazas con avance registrado:
+
+- **Multimodal** y **Exclusivo** se recalculan a partir del avance (`carriles` y `ejecutado`), no del inventario estático — así los carriles ya convertidos dejan de contarse como multimodal y pasan a exclusivo.
+- El título del bloque muestra "· a hoy" para dejar claro que ese desglose ya refleja las conversiones.
+- El total de carriles sigue siendo el mismo (no cambia, solo se redistribuye entre multimodal/exclusivo).
+- El renglón "Fijos Multimodal (no convierten)" que ya existía debajo sigue mostrando cuántos quedarán como multimodal permanentemente (tus "6 multimodales que no se convertirán").
+
+Con tu ejemplo de Tlalpan (28 carriles totales, 22 convertibles, 15 ejecutados, 6 fijos): ahora mostrará **13 Multimodal** y **15 Exclusivo** en vez de los 20/8 originales, y consistentemente llegará a 6 Multimodal cuando el avance se complete.
