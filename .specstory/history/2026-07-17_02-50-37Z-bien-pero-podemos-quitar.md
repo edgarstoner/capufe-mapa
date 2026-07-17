@@ -135,3 +135,27 @@ The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated
 _**Agent (claude-sonnet-5 2026-07-17 02:51:45Z)**_
 
 Listo. El marcador ahora es un círculo blanco con la imagen de la plaza (o 🌉 para puentes) y un anillo de color según el avance, sin el pin en forma de gota. Recarga el mapa para verlo.
+
+---
+
+_**User (2026-07-17 02:54:13Z)**_
+
+'/Users/edgarguevara/Documents/cero efectivo/img/bridge.png' ahora los puentes reemplazalo por esta imagen
+
+---
+
+_**Agent (claude-sonnet-5 2026-07-17 02:54:16Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 02:54:18Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 02:54:18Z)**_
+
+Listo, los marcadores de puentes ahora usan `img/bridge.png` en vez del emoji 🌉.
