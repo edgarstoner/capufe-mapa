@@ -288,13 +288,15 @@ function progressColor(pct) {
 
 const makeProgressIcon = (tipo, pct) => {
   const fill = progressColor(pct);
-  const glyph = tipo === 'puente' ? '🌉' : '🏛';
-  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="34" viewBox="0 0 26 34">' +
-    '<path d="M13 1C6.9 1 2 5.9 2 12c0 7.5 11 21 11 21s11-13.5 11-21C24 5.9 19.1 1 13 1Z" fill="' + fill + '" stroke="white" stroke-width="1.5"/>' +
-    '<circle cx="13" cy="12" r="7.5" fill="white" opacity="0.92"/></svg>';
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="38" viewBox="0 0 30 38">' +
+    '<path d="M15 1C8.4 1 2 6.9 2 14c0 8.5 13 23 13 23s13-14.5 13-23C28 6.9 21.6 1 15 1Z" fill="' + fill + '" stroke="white" stroke-width="1.5"/>' +
+    '<circle cx="15" cy="14" r="9" fill="white" opacity="0.95"/></svg>';
+  const inner = tipo === 'puente'
+    ? '<span style="position:absolute;top:4px;left:50%;transform:translateX(-50%);font-size:11px;line-height:1;">🌉</span>'
+    : '<img src="img/toll.png" style="position:absolute;top:5px;left:50%;transform:translateX(-50%);width:16px;height:16px;object-fit:contain;">';
   return L.divIcon({
-    html: '<div style="position:relative;width:26px;height:34px;">' + svg + '<span style="position:absolute;top:3px;left:50%;transform:translateX(-50%);font-size:10px;line-height:1;">' + glyph + '</span></div>',
-    className:'', iconSize:[26,34], iconAnchor:[13,34], popupAnchor:[0,-34]
+    html: '<div style="position:relative;width:30px;height:38px;">' + svg + inner + '</div>',
+    className:'', iconSize:[30,38], iconAnchor:[15,38], popupAnchor:[0,-38]
   });
 };
 
