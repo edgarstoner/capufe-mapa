@@ -314,9 +314,16 @@ function buildPlazaPopup(p) {
   // los carriles ejecutados dejan de contarse como multimodal y pasan a exclusivo.
   let mmCount = c.MULTIMODAL || 0;
   let excCount = c.EXCLUSIVO || 0;
+  // Carriles convertidos: se derivan del % de avance (fuente de verdad del
+  // Sheet) aplicado sobre los convertibles, no del campo "ejecutado" crudo,
+  // que puede quedar desactualizado respecto al % que el cliente edita.
+  let carrilesConvertidos = a ? a.ejecutado : 0;
   if (a && typeof a.carriles === 'number') {
-    excCount = a.ejecutado;
-    mmCount = Math.max(0, a.carriles - a.ejecutado);
+    carrilesConvertidos = a.pct !== null && typeof a.convertibles === 'number'
+      ? Math.round(a.convertibles * (a.pct / 100))
+      : a.ejecutado;
+    excCount = carrilesConvertidos;
+    mmCount = Math.max(0, a.carriles - carrilesConvertidos);
   }
   const carrilGrid = totalC > 0 ? (
     '<div class="tt-carriles"><div class="tt-carr-title">Carriles (' + totalC + ' total' + (a ? ' · a hoy' : '') + ')</div><div class="tt-carr-grid">' +
@@ -337,7 +344,7 @@ function buildPlazaPopup(p) {
     progressBlock = '<div class="tt-progress">' +
       '<div class="tt-progress-title">Avance a TAG</div>' +
       '<div class="tt-progress-bar-track"><div class="tt-progress-bar-fill" style="width:' + (pct||0) + '%;background:' + color + ';"></div></div>' +
-      '<div class="tt-progress-detail"><span>' + a.ejecutado + ' / ' + a.convertibles + ' carriles</span><strong style="color:' + color + '">' + pctLabel + '</strong></div>' +
+      '<div class="tt-progress-detail"><span>' + carrilesConvertidos + ' / ' + a.convertibles + ' carriles</span><strong style="color:' + color + '">' + pctLabel + '</strong></div>' +
       (a.fijos > 0 ? '<div class="tt-progress-detail" style="margin-top:2px;"><span>Fijos Multimodal (no convierten)</span><strong>' + a.fijos + '</strong></div>' : '') +
       '</div>';
   }

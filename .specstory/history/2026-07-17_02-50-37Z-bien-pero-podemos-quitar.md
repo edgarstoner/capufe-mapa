@@ -869,3 +869,218 @@ Listo. Ahora en las plazas con avance registrado:
 - El renglón "Fijos Multimodal (no convierten)" que ya existía debajo sigue mostrando cuántos quedarán como multimodal permanentemente (tus "6 multimodales que no se convertirán").
 
 Con tu ejemplo de Tlalpan (28 carriles totales, 22 convertibles, 15 ejecutados, 6 fijos): ahora mostrará **13 Multimodal** y **15 Exclusivo** en vez de los 20/8 originales, y consistentemente llegará a 6 Multimodal cuando el avance se complete.
+
+---
+
+_**User (2026-07-17 03:15:14Z)**_
+
+Algo esta fallandi, poruq epor ejemplo en Tlalpan, he puesto ya el 100% y, segun la tabla en la columna "fijos multimodal" se quedarán solo 6 carriles multomodales y el resto serán exclusivos, sin embargo la card aparece 13 multimodales y 15 exclusivos.
+
+---
+
+_**Agent (claude-sonnet-5 2026-07-17 03:15:22Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:15:23Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+495	      totalEjecutado += a.ejecutado;
+496	      totalCarriles  += a.carriles;
+497	    } else {
+498	      p.avance = null;
+499	    }
+500	    const marker = markers[p.id];
+501	    if (marker) {
+502	      marker.setIcon(makeProgressIcon(p.tipo, a ? a.pct : null));
+503	      marker.setPopupContent(buildPlazaPopup(p));
+504	    }
+505	  });
+506	
+507	  // Porcentaje global: misma fórmula que el Sheet (ejecutado / carriles totales)
+508	  const overallPct = totalCarriles > 0 ? (totalEjecutado / totalCarriles) * 100 : 0;
+509	  const opEl = document.getElementById('op-pct-value');
+510	  opEl.textContent = Math.round(overallPct) + '%';
+511	  opEl.style.color = progressColor(overallPct);
+512	
+513	  if (matched < PLAZAS.length) {
+514	    banner.style.display = 'block';
+515	    banner.className = 'warn';
+516	    banner.textContent = '⚠ ' + matched + ' de ' + PLAZAS.length + ' plazas encontradas en el Cronograma. Las demás se muestran en gris (sin datos).';
+517	  }
+518	}
+519	
+520	function processCSVText(text) {
+521	  const rows = parseCSV(text);
+522	  const headerIdx = rows.findIndex(r => (r[0]||'').trim() === 'Unidad Regional');
+523	  if (headerIdx === -1) throw new Error('No se encontró encabezado "Unidad Regional". ¿Es el archivo correcto?');
+524	  const headerRow    = rows[headerIdx];
+525	  const subHeaderRow = rows[headerIdx + 1] || [];
+526	
+527	  const carrilesIdx  = headerRow.findIndex(h => h.trim().toLowerCase() === 'carriles');
+528	  const fijosIdx     = headerRow.findIndex(h => /fijos/i.test(h));
+529	  const avancePctIdx = headerRow.findIndex(h => /avance/i.test(h));
+530	  const ejecutadoIdxs = [];
+531	  subHeaderRow.forEach((h, i) => { if (h.trim().toLowerCase() === 'ejecutado') ejecutadoIdxs.push(i); });
+532	
+533	  if (carrilesIdx === -1) throw new Error('Columna "Carriles" no encontrada. Verifica que el CSV sea de la hoja Cronograma.');
+534	
+535	  const newData = {};
+536	  for (let i = headerIdx + 2; i < rows.length; i++) {
+537	    const r = rows[i];
+538	    if (!r || r.every(c => !c || !c.trim())) continue;
+539	    const plazaCell = (r[1]||'').trim();
+540	    if (!plazaCell) continue;
+541	    const pid = parseCronogramaPlazaId(plazaCell);
+542	    if (!pid) continue;
+543	
+544	    const carriles     = parseFloat(r[carrilesIdx]) || 0;
+545	    const fijos        = fijosIdx > -1 ? (parseFloat(r[fijosIdx]) || 0) : 0;
+546	    const convertibles = Math.max(0, carriles - fijos);
+547	
+548	    let ejecutado = 0;
+549	    ejecutadoIdxs.forEach(idx => { const v = parseFloat(r[idx]); if (!isNaN(v) && v > ejecutado) ejecutado = v; });
+550	
+551	    // Usar el % de avance directo del Sheet (guardado como decimal: 0.5357 = 53.57%)
+552	    let pct = null;
+553	    if (avancePctIdx > -1) {
+554	      const rawPct = parseFloat(r[avancePctIdx]);
+555	      if (!isNaN(rawPct) && rawPct > 0) pct = rawPct * 100;
+556	      else if (!isNaN(rawPct)) pct = 0;
+557	    } else if (convertibles > 0) {
+558	      pct = (ejecutado / convertibles) * 100;
+559	    }
+560	
+561	    newData[pid] = { carriles, fijos, convertibles, ejecutado, pct };
+562	  }
+563	  return newData;
+564	}
+565	
+566	async function fetchAndUpdate() {
+567	  const banner = document.getElementById('progress-banner');
+568	  const btn    = document.getElementById('btn-cargar');
+569	  btn.disabled = true;
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:15:48Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:15:51Z)**_
+
+El problema es que el desglose de carriles usaba el campo `ejecutado` de la hoja, pero desde el cambio anterior el **% de avance viene directo de otra columna del Sheet** (no se recalcula desde `ejecutado`). Si tú actualizas el % pero esa columna `ejecutado` no cambia igual, quedan desincronizados — por eso la card se quedó "congelada" en 13/15 aunque el % ya diga 100%.
+
+Voy a corregir esto para que tanto el desglose de carriles como el detalle de "carriles ejecutados" se calculen a partir del **% de avance** (la fuente de verdad), no del campo `ejecutado` crudo.
+
+_**Agent (claude-sonnet-5 2026-07-17 03:15:52Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+328	  ) : '';
+329	
+330	  let progressBlock = '';
+331	  if (a) {
+332	    const pct = a.pct === null ? null : Math.round(a.pct);
+333	    const color = progressColor(a.pct);
+334	    const STATE_LABELS = { sinDatos:'Sin datos', pendiente:'Pendiente', enProceso:'En proceso', terminado:'Terminado' };
+335	    const stateLabel = STATE_LABELS[progressState(a.pct)];
+336	    const pctLabel = pct === null ? stateLabel : stateLabel + ' · ' + pct + '%';
+337	    progressBlock = '<div class="tt-progress">' +
+338	      '<div class="tt-progress-title">Avance a TAG</div>' +
+339	      '<div class="tt-progress-bar-track"><div class="tt-progress-bar-fill" style="width:' + (pct||0) + '%;background:' + color + ';"></div></div>' +
+340	      '<div class="tt-progress-detail"><span>' + a.ejecutado + ' / ' + a.convertibles + ' carriles</span><strong style="color:' + color + '">' + pctLabel + '</strong></div>' +
+341	      (a.fijos > 0 ? '<div class="tt-progress-detail" style="margin-top:2px;"><span>Fijos Multimodal (no convierten)</span><strong>' + a.fijos + '</strong></div>' : '') +
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:15:55Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:15:59Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:16:02Z)**_
+
+<tool-use data-tool-type="write" data-tool-name="Edit"><details>
+<summary>Tool use: **Edit**</summary>
+
+```text
+The file /Users/edgarguevara/Documents/cero efectivo/index.html has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:16:05Z)**_
+
+_**Agent (claude-sonnet-5 2026-07-17 03:16:15Z)**_
+
+<tool-use data-tool-type="read" data-tool-name="Read"><details>
+<summary>Tool use: **Read**</summary>
+ `./index.html`
+
+```text
+307	function buildPlazaPopup(p) {
+308	  const c = p.carriles || {};
+309	  const a = p.avance;
+310	  const totalC = c.total || 0;
+311	  // Cuando hay avance, MULTIMODAL/EXCLUSIVO se recalculan a partir del propio
+312	  // avance (carriles y ejecutado) en vez del inventario estático, para que el
+313	  // desglose de arriba y la barra de "Avance a TAG" cuenten la misma historia:
+314	  // los carriles ejecutados dejan de contarse como multimodal y pasan a exclusivo.
+315	  let mmCount = c.MULTIMODAL || 0;
+316	  let excCount = c.EXCLUSIVO || 0;
+317	  // Carriles convertidos: se derivan del % de avance (fuente de verdad del
+318	  // Sheet) aplicado sobre los convertibles, no del campo "ejecutado" crudo,
+319	  // que puede quedar desactualizado respecto al % que el cliente edita.
+320	  let carrilesConvertidos = a ? a.ejecutado : 0;
+321	  if (a && typeof a.carriles === 'number') {
+322	    carrilesConvertidos = a.pct !== null && typeof a.convertibles === 'number'
+323	      ? Math.round(a.convertibles * (a.pct / 100))
+324	      : a.ejecutado;
+325	    excCount = carrilesConvertidos;
+326	    mmCount = Math.max(0, a.carriles - carrilesConvertidos);
+327	  }
+328	  const carrilGrid = totalC > 0 ? (
+329	    '<div class="tt-carriles"><div class="tt-carr-title">Carriles (' + totalC + ' total' + (a ? ' · a hoy' : '') + ')</div><div class="tt-carr-grid">' +
+330	    (mmCount ? '<div class="tt-carr-item mm"><span>'+mmCount+'</span>Multimodal</div>' : '') +
+331	    (c.EXPRESS ? '<div class="tt-carr-item ex"><span>'+c.EXPRESS+'</span>Exprés</div>' : '') +
+332	    (excCount ? '<div class="tt-carr-item exc"><span>'+excCount+'</span>Exclusivo</div>' : '') +
+333	    (c.IAVE ? '<div class="tt-carr-item iv"><span>'+c.IAVE+'</span>IAVE</div>' : '') +
+334	    '</div></div>'
+335	  ) : '';
+336	
+337	  let progressBlock = '';
+338	  if (a) {
+339	    const pct = a.pct === null ? null : Math.round(a.pct);
+340	    const color = progressColor(a.pct);
+341	    const STATE_LABELS = { sinDatos:'Sin datos', pendiente:'Pendiente', enProceso:'En proceso', terminado:'Terminado' };
+342	    const stateLabel = STATE_LABELS[progressState(a.pct)];
+343	    const pctLabel = pct === null ? stateLabel : stateLabel + ' · ' + pct + '%';
+344	    progressBlock = '<div class="tt-progress">' +
+345	      '<div class="tt-progress-title">Avance a TAG</div>' +
+346	      '<div class="tt-progress-bar-track"><div class="tt-progress-bar-fill" style="width:' + (pct||0) + '%;background:' + color + ';"></div></div>' +
+347	      '<div class="tt-progress-detail"><span>' + carrilesConvertidos + ' / ' + a.convertibles + ' carriles</span><strong style="color:' + color + '">' + pctLabel + '</strong></div>' +
+348	      (a.fijos > 0 ? '<div class="tt-progress-detail" style="margin-top:2px;"><span>Fijos Multimodal (no convierten)</span><strong>' + a.fijos + '</strong></div>' : '') +
+349	      '</div>';
+350	  }
+351	
+352	  return '<div class="tt-inner"><div class="tt-header"><span class="tt-icon"><img src="img/' + (p.tipo==='puente'?'bridge.png':'toll.png') + '" style="width:18px;height:18px;object-fit:contain;"></span>' +
+353	    '<div><div class="tt-name">' + p.nombre + '</div><div class="tt-sub">Plaza ' + p.id + ' · U.R. ' + p.ur + '</div></div></div>' +
+354	    '<div class="tt-badges"><span class="tt-badge ' + p.owner.toLowerCase() + '">' + p.owner + '</span>' +
+355	    '<span class="tt-badge tipo">' + (p.tipo==='puente'?'Puente':'Plaza de Cobro') + '</span></div>' +
+356	    carrilGrid + progressBlock + '</div>';
+```
+</details></tool-use>
+
+_**Agent (claude-sonnet-5 2026-07-17 03:16:19Z)**_
+
+Este cambio corrige la desincronización. Ahora al 100% de avance en Tlalpan: `carrilesConvertidos = round(convertibles × 100%) = 22`, `mmCount = carriles(28) − 22 = 6`, `excCount = 22` — coincide exactamente con lo que dice la columna "Fijos Multimodal" (6 se quedan multimodales, el resto pasa a exclusivo).
