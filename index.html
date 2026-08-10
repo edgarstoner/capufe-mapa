@@ -152,7 +152,7 @@
     <div id="progress-legend">
       <h3>Avance de transición a TAG</h3>
       <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#2563eb;"></div>Pendiente (0%)</div>
-      <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#f59e0b;"></div>En proceso</div>
+      <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#2563eb;"></div>En proceso</div>
       <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#22c55e;"></div>Terminado (100%)</div>
       <div class="progress-legend-item"><div class="progress-legend-dot" style="background:#9ca3af;"></div>Sin datos</div>
     </div>
@@ -273,7 +273,7 @@ ROUTES.forEach(r => {
 const PROGRESS_COLORS = {
   sinDatos:  '#9ca3af', // gray  — no data available
   pendiente: '#2563eb', // azul  — 0% ejecutado
-  enProceso: '#f59e0b', // amarillo — partial
+  enProceso: '#2563eb', // azul  — partial (mismo azul que Pendiente, la etiqueta sigue diciendo "En proceso")
   terminado: '#22c55e', // verde — 100% ejecutado
 };
 
