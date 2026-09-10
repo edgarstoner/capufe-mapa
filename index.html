@@ -239,9 +239,17 @@ PLAZAS_BASE.forEach(p => {
 });
 const PLAZAS = PLAZAS_BASE;
 
-const map = L.map('map', { center:[23.5,-102.5], zoom:5, zoomControl:true, attributionControl:false });
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom:18 }).addTo(map);
-L.control.attribution({ prefix:'© OpenStreetMap © CARTO © SCT/IMT' }).addTo(map);
+const map = L.map('map', { center:[23.5,-102.5], zoom:5, maxZoom:16, zoomControl:true, attributionControl:false });
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom:16
+}).addTo(map);
+map.createPane('labels');
+map.getPane('labels').style.zIndex = 350;
+map.getPane('labels').style.pointerEvents = 'none';
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom:16, pane:'labels'
+}).addTo(map);
+L.control.attribution({ prefix:'© Esri © OpenStreetMap © SCT/IMT' }).addTo(map);
 
 const layerCapufeLines  = L.layerGroup().addTo(map);
 const layerFonadinLines = L.layerGroup().addTo(map);
