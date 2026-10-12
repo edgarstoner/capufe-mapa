@@ -147,6 +147,7 @@
     <div id="overall-progress">
       <div class="op-pct" id="op-pct-value" style="color:#9ca3af;">—</div>
       <div class="op-label">Avance global a TAG</div>
+      <div class="op-label" id="op-carriles-value"></div>
       <button id="btn-cargar">🔄 Actualizar datos</button>
     </div>
     <div id="progress-legend">
@@ -451,7 +452,8 @@ let AVANCE_DATA = AVANCE_DATA_SEED;
 
 // Three independent export endpoints for the same "Cronograma" tab, tried in
 // order — Google's "Publish to web" CSV endpoint is known to fail
-const STORAGE_KEY  = 'capufe_avance_data';
+// Versión nueva: los datos guardados antes usaban el máximo mensual, no la suma.
+const STORAGE_KEY  = 'capufe_avance_data_v2';
 const SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbySy0B734FUYVuVypYGbWQRYQKlw3_l8zXKu1gpou2mQ_GIZh8WFfXYSZQgXMMVS1iDfA/exec?key=map2026-cEf9kRmP';
 
 // Minimal but correct CSV parser: handles quoted fields, embedded commas, and
@@ -501,14 +503,18 @@ function applyAvanceTAG() {
   const banner = document.getElementById('progress-banner');
   let totalEjecutado = 0, totalCarriles = 0, matched = 0;
 
+  // El global incluye todo el Cronograma, incluso plazas sin marcador en el mapa.
+  Object.values(AVANCE_DATA).forEach(a => {
+    totalEjecutado += a.ejecutado;
+    totalCarriles += a.carriles;
+  });
+
   PLAZAS.forEach(p => {
     const key = String(p.id);
     const a = AVANCE_DATA[key];
     if (a) {
       p.avance = a;
       matched++;
-      totalEjecutado += a.ejecutado;
-      totalCarriles  += a.carriles;
     } else {
       p.avance = null;
     }
@@ -522,8 +528,9 @@ function applyAvanceTAG() {
   // Porcentaje global: misma fórmula que el Sheet (ejecutado / carriles totales)
   const overallPct = totalCarriles > 0 ? (totalEjecutado / totalCarriles) * 100 : 0;
   const opEl = document.getElementById('op-pct-value');
-  opEl.textContent = Math.round(overallPct) + '%';
+  opEl.textContent = overallPct.toFixed(2) + '%';
   opEl.style.color = progressColor(overallPct);
+  document.getElementById('op-carriles-value').textContent = totalEjecutado.toLocaleString('es-MX') + ' de ' + totalCarriles.toLocaleString('es-MX') + ' carriles';
 
   if (matched < PLAZAS.length) {
     banner.style.display = 'block';
@@ -561,7 +568,8 @@ function processCSVText(text) {
     const convertibles = Math.max(0, carriles - fijos);
 
     let ejecutado = 0;
-    ejecutadoIdxs.forEach(idx => { const v = parseFloat(r[idx]); if (!isNaN(v) && v > ejecutado) ejecutado = v; });
+    // Cada mes contiene sus propias conversiones: el avance es la suma mensual.
+    ejecutadoIdxs.forEach(idx => { const v = parseFloat(r[idx]); if (!isNaN(v)) ejecutado += v; });
 
     // Usar el % de avance directo del Sheet (guardado como decimal: 0.5357 = 53.57%)
     let pct = null;
